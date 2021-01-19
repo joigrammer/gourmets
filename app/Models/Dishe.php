@@ -15,6 +15,10 @@ class Dishe extends Model
         'name', 'slug', 'description', 'meal_id', 'user_id'
     ];
 	
+	protected $guarded = [
+		'name', 'slug', 'description', 'meal_id', 'user_id'
+	];
+	
 	public function allergens()
 	{
 		return $this->ingredients()->whereHas('allergens')

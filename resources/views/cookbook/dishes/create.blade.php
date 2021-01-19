@@ -17,7 +17,10 @@
                     <div class="px-4 sm:px-0">
                         <h3 class="text-lg font-medium leading-6 text-gray-900">Receta</h3>
                         <p class="mt-1 text-sm text-gray-600">
-                            Receta Content Info
+                                            En esta sección podrá crear una nueva receta, asegúrese que el nombre de la receta sea un indicativo general de lo que conllevará y describir el plato de forma breve.
+                        </p>
+						<p class="mt-1 text-sm text-gray-600">
+                     Es necesario la selección del tipo de alimento al que pertenece el plato.
                         </p>
                     </div>
                 </div>

@@ -15,20 +15,33 @@ class IngredientsTable extends Component
     ];
 
     public $search = '';
-
+	public $show;
+	
+	public function restore($ingredient)
+	{
+		if(\auth()->user()->can('restore:ingredients')){
+        	Ingredient::withTrashed()->where('id', $ingredient)->restore();
+		}
+	}
+	
     public function remove(Ingredient $ingredient)
     {
 		if(\auth()->user()->can('delete:ingredients')){
         	$ingredient->delete();
 		}
-    }
+    }	
 
     public function render()
     {
-        return view('livewire.ingredients-table', [
-            'ingredients' => Ingredient::where('name', 'LIKE', "%{$this->search}%")
+		if($this->show){
+			$ingredients = Ingredient::onlyTrashed()->paginate(10);
+		}else{
+			$ingredients = Ingredient::where('name', 'LIKE', "%{$this->search}%")
                 ->orWhere('description', 'LIKE', "%{$this->search}%")
-                ->paginate(15)
+                ->paginate(10);
+		}
+        return view('livewire.ingredients-table', [
+            'ingredients' => $ingredients
         ]);
     }
 }

@@ -6,12 +6,15 @@ use Livewire\Component;
 use App\Models\Meal;
 use App\Models\Category;
 use App\Models\Ingredient;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class EditDishe extends Component
 {
 	public $dishe;
 	
 	public $name;
+	public $slug;
 	public $description;
 	
 	public $meal_id;
@@ -40,6 +43,27 @@ class EditDishe extends Component
 		}
 	}
 	
+	public function submit()
+	{
+		$this->slug = Str::slug($this->name);
+        $data = $this->validate([
+            'name' => 'required|min:3|max:128',
+            'slug' => [
+                Rule::unique('dishes')->ignore($this->slug, 'slug'),
+            ],
+            'description' => 'required|min:3|max:255',
+            'meal_id' => 'required|exists:meals,id',
+        ]);		
+        $ingredients = collect();
+        foreach ($this->recipe as $ingredient){
+            $ingredients->push($ingredient['id']);
+        }
+        $this->dishe->fill($data);
+        $this->dishe->ingredients()->sync($ingredients);
+		$this->dishe->save();
+        return redirect()->route('dashboard');
+	}
+	
 	public function addIngredient()
     {
         if(!empty($this->ingredient_id)){
@@ -56,6 +80,11 @@ class EditDishe extends Component
             );
         }
 
+    }
+	
+	public function remove($ingredient)
+    {
+        unset($this->recipe[$ingredient]);
     }
 	
     public function render()

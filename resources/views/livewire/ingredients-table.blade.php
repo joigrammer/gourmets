@@ -1,3 +1,6 @@
+@push('styles-css')
+	<link rel="stylesheet" href="{{ asset('/css/visibility.css') }}">
+@endpush
 <div  class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
@@ -17,11 +20,14 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                         <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-                            <input
-                                wire:model="search"
+                            <input wire:model="search"
                                 class="form-input rounded-md shadow-sm mt-1 block w-full"
                                 type="text"
                                 placeholder="{{ __('messages.search') }}">
+							@can('restore:ingredients')
+								<input id="visibility" wire:model="show" class="visibility" type="checkbox"/>
+								<label for="visibility" class="ml-3"></label>		
+							@endcan							
                         </div>
                         <table class="w-full divide-gray-200">
                             <thead class="bg-gray-50">
@@ -66,19 +72,24 @@
                                             	@endforeach
 											</div>
 											<div class="flex gap-1">
-												@can('delete:ingredients')
-													<button
-														wire:click="remove({{ $ingredient->id }})"
-														class="inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-600 transition ease-in-out duration-150">
-														{{ __('messages.delete') }}
+												@if($ingredient->trashed())
+													<button wire:click="restore({{ $ingredient->id }})"
+															class="inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-600 transition ease-in-out duration-150">
+														{{ __('messages.restore') }}
 													</button>
+												@else
+													@can('delete:ingredients')
+														<button wire:click="remove({{ $ingredient->id }})"
+															class="inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-600 transition ease-in-out duration-150">
+															{{ __('messages.delete') }}
+														</button>
+													@endcan
+													@can('edit:ingredients')
+														<a href="{{ route('configs.ingredients.edit', $ingredient->id) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
+															{{ __('messages.edit') }}
+														</a>
 												@endcan
-
-												@can('edit:ingredients')
-													<a href="{{ route('configs.ingredients.edit', $ingredient->id) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
-														{{ __('messages.edit') }}
-													</a>
-												@endcan
+												@endif																
 											</div>                                            
                                         </td>
                                     </tr>
