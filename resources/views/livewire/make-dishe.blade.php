@@ -62,7 +62,7 @@
                     <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">
                             Categories
-                            <select id="category_id" name="category_id" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md" wire:model="category_id">
+                            <select id="category_id" name="category_id" class="select2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md" wire:model="category_id">
                                 <option value="" selected>Choose category...</option>
                                 @foreach($categories as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -72,7 +72,7 @@
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             Ingredients
                             <div class="flex">
-                                <select id="ingredient_id" name="ingredient_id" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md" wire:model="ingredient_id">
+                                <select id="ingredient_id" name="ingredient_id" class="select2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md" wire:model="ingredient_id">
                                     <option value="" selected>Choose ingredient...</option>
                                     @if(!is_null($category_id))
                                         @foreach($ingredients as $ingredient)
@@ -132,3 +132,22 @@
         </div>
     </div>
 </div>
+
+
+<script>		
+	document.addEventListener('livewire:load', function (event) {
+          @this.on('refreshDropdown', function () {
+              $('.select2').select2();
+          });
+    })
+	$(document).ready(function() {
+		$('#category_id').select2();
+		$('#category_id').on('change', function (e) {
+			@this.set('category_id', e.target.value);
+		})
+		$('#ingredient_id').select2();
+		$('#ingredient_id').on('change', function (e) {
+			@this.set('ingredient_id', e.target.value);
+		})
+	});
+</script>

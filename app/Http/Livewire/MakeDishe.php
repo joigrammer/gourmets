@@ -69,6 +69,7 @@ class MakeDishe extends Component
     }
     public function render()
     {
+		$this->emit('refreshDropdown');
         if(!empty($this->category_id)){
             $this->ingredients = Category::find($this->category_id)->ingredients;
 
